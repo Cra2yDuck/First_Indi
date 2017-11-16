@@ -258,16 +258,17 @@ def tick():
         obj.step()
         obj.draw(canv)
         obj.other()
-    for obj in s[0:15]:
-        obj.intersect(global_person)
-        obj.escape(global_person)
-        for i in b:
-            i.intersect(obj)
-    for obj in s[16:21]:
-        obj.intersect(global_person)
-        for i in b:
-            i.intersect(obj)
-        obj.chase(global_person)
+    for obj in s:
+        if Cow == type(obj):
+            obj.intersect(global_person)
+            obj.escape(global_person)
+            for i in b:
+                i.intersect(obj)
+        elif Zombie == type(obj):
+            obj.intersect(global_person)
+            for i in b:
+                i.intersect(obj)
+            obj.chase(global_person)
     for obj in b:
         obj.step()
         obj.draw(canv)
@@ -281,7 +282,7 @@ def mouseMove(event):
 
 
 def click(event):
-    if global_person.energy>5:
+    if global_person.energy>=5:
         if b[0].alive==False:
             b[0].shot(global_person, event.x, event.y)
             global_person.energy-=5
