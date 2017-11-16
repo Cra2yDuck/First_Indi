@@ -372,7 +372,6 @@ for i in range(15):
     s.append(Cow(random.randint(0,1580), random.randint(0,860)))
 s.append(Person(250, 250))
 global_person = s[-1]
-global_person.x = 0
 for i in range(5):
     s.append(Zombie(random.randint(0,1580), random.randint(0,860)))
 for i in range(4):
