@@ -283,18 +283,11 @@ def mouseMove(event):
 
 def click(event):
     if global_person.energy>=5:
-        if b[0].alive==False:
-            b[0].shot(global_person, event.x, event.y)
-            global_person.energy-=5
-        elif b[1].alive==False:
-            b[1].shot(global_person, event.x, event.y)
-            global_person.energy-=5
-        elif b[2].alive==False:
-            b[2].shot(global_person, event.x, event.y)
-            global_person.energy-=5
-        elif b[3].alive==False:
-            b[4].shot(global_person, event.x, event.y)
-            global_person.energy-=5
+        for i in b:
+            if i.alive==False:
+                i.shot(global_person, event.x, event.y)
+                global_person.energy-=5
+                break
 
 
 def click2(event):
@@ -366,15 +359,19 @@ root.bind('<Button-2>', click2)
 root.bind('<Button-3>', click3)
 root.bind('<ButtonRelease-3>', release3)
 
+countCow=15
+countZombie=5
+countBullet=4
+
 s = []
 b = []
-for i in range(15):
+for i in range(countCow):
     s.append(Cow(random.randint(0,1580), random.randint(0,860)))
 s.append(Person(250, 250))
 global_person = s[-1]
-for i in range(5):
+for i in range(countZombie):
     s.append(Zombie(random.randint(0,1580), random.randint(0,860)))
-for i in range(4):
+for i in range(countBullet):
     b.append(Bullet())
 gameloop = False
 moveP = False
