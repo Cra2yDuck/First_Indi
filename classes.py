@@ -1,214 +1,254 @@
-from random import *
-from math import *
 from tkinter import *
-from time import *
+import random
+import math
+import time
+
 
 class P:
-    def __init__(this, x, y, name=""):
-        this.x = x
-        this.y = y
-        this.speed = 0.5
-        this.see = 70
-        this.gen_way()
-        this.name = name
-        this.life = 5
-        this.energy = 100
-        this.alive = True
-        this.color = "Blue"
-    def gen_way(this):
-        this.way = 0
-    def step(this):
-        this.x += this.speed * cos(this.way)
-        this.y += this.speed * sin(this.way)
-    def rotate(this, alpha):
-        this.way += alpha
-    def event(this, event):
+    def __init__(self, x, y, name=""):
+        self.x = x
+        self.y = y
+        self.speed = 0.5
+        self.see = 70
+        self.gen_way()
+        self.name = name
+        self.life = 5
+        self.energy = 100
+        self.alive = True
+        self.color = "Blue"
+
+    def gen_way(self):
+        self.way = 0
+
+    def step(self):
+        self.x += self.speed * math.cos(self.way)
+        self.y += self.speed * math.sin(self.way)
+
+    def rotate(self, alpha):
+        self.way += alpha
+
+    def event(self, event):
         pass
-    def death(this):
-        this.alive = False
-    def draw(this, canv):
-        if this.alive:
-            canv.create_oval(this.x - this.r, this.y - this.r, this.x + this.r, this.y + this.r, fill=this.color)
-    def other(this):
-        if this.life<=0:
-            this.death()
-    def __str__(this):
-        return this.name + " " + str(this.x) + " " + str(this.y)
+
+    def death(self):
+        self.alive = False
+
+    def draw(self, canv):
+        if self.alive:
+            canv.create_oval(self.x - self.r, self.y - self.r, self.x + self.r, self.y + self.r, fill=self.color)
+
+    def other(self):
+        if self.life <= 0:
+            self.death()
+
+    def __str__(self):
+        return self.name + " " + str(self.x) + " " + str(self.y)
+
 
 class Cow(P):
-    def __init__(this, x, y, name=""):
-        P.__init__(this, x, y, name)
-        this.color = "chocolate"
-        this.r = 5
-        this.esc = False
-    def draw(this, canv):
-        P.draw(this, canv)
-        if this.alive:
-            canv.create_rectangle(this.x-this.life*2,this.y-this.r-10,this.x+this.life*2,this.y-this.r-5,fill="red")
-    def gen_way(this):
-        this.way = uniform(0.0, 2*pi)
-        this.speed = uniform(0.25,0.75)
-    def step(this):
-        P.step(this)
-        if this.x+this.speed*cos(this.way)>=1580 or this.x-this.speed*cos(this.way)<=0 or this.y+this.speed*sin(this.way)>=860 or this.y-this.speed*sin(this.way)<=0:
-            this.way+=pi
-            P.step(this)
-            P.step(this)
-    def other(this):
-        P.other(this)
-        if this.esc==False:
-            if randint(0, 200) == 0:
-                this.gen_way()
-            if this.speed * cos(this.way)<=0.1 and this.speed * sin(this.way)<=0.1:
-                this.r+=0.008
-        if randint(0, 10) == 0 and this.r>=5 and this.life<5:
-            this.life+=0.01
-            this.r-=0.02
-    def intersect(this, obj):
-        if obj.x+obj.r>this.x-this.r and obj.x-obj.r<this.x+this.r and obj.y-obj.r<this.y+this.r and obj.y+obj.r>this.y-this.r and this.alive==True:
-            this.life-=0.15
-        if this.life<=0:
-            if obj.life<20-5 and this.alive==True:
+    def __init__(self, x, y, name=""):
+        P.__init__(self, x, y, name)
+        self.color = "chocolate"
+        self.r = 5
+        self.esc = False
+
+    def draw(self, canv):
+        P.draw(self, canv)
+        if self.alive:
+            canv.create_rectangle(self.x-self.life*2,self.y-self.r-10,self.x+self.life*2,self.y-self.r-5,fill="red")
+
+    def gen_way(self):
+        self.way = random.uniform(0.0, 2 * math.pi)
+        self.speed = random.uniform(0.25, 0.75)
+
+    def step(self):
+        P.step(self)
+        if self.x + self.speed * math.cos(self.way) >= 1580 or self.x - self.speed * math.cos(self.way) <= 0 or \
+           self.y + self.speed * math.sin(self.way) >= 860 or self.y - self.speed * math.sin(self.way) <= 0:
+            self.way += math.pi
+            P.step(self)
+            P.step(self)
+
+    def other(self):
+        P.other(self)
+        if not self.esc:
+            if random.randint(0, 200) == 0:
+                self.gen_way()
+            if self.speed * math.cos(self.way) <= 0.1 and self.speed * math.sin(self.way) <= 0.1:
+                self.r += 0.008
+        if random.randint(0, 10) == 0 and self.r >= 5 and self.life < 5:
+            self.life += 0.01
+            self.r -= 0.02
+
+    def intersect(self, obj):
+        if obj.x+obj.r>self.x-self.r and obj.x-obj.r<self.x+self.r and obj.y-obj.r<self.y+self.r and obj.y+obj.r>self.y-self.r and self.alive==True:
+            self.life-=0.15
+        if self.life<=0:
+            if obj.life<20-5 and self.alive==True:
                 obj.life+=3
-            elif obj.life<20 and this.alive==True:
+            elif obj.life<20 and self.alive==True:
                 obj.life=20
-            if obj.energy<100-30 and this.alive==True:
+            if obj.energy<100-30 and self.alive==True:
                 obj.energy+=30
-            elif obj.energy<20 and this.alive==True:
+            elif obj.energy<20 and self.alive==True:
                 obj.energy=100
-            this.death()
-    def escape(this, obj):
-        if obj.x+obj.r+this.see>this.x and obj.x-obj.r-this.see<this.x and obj.y+obj.r+this.see>this.y and obj.y-obj.r-this.see<this.y:
-            this.way = atan((obj.y - this.y) / (obj.x - this.x))
-            if obj.x>this.x:
-                this.way+=pi
-            if this.esc==False:
-                this.speed=0.7
-            this.esc=True
-        elif obj.x+obj.r+this.see>this.x or obj.x-obj.r-this.see<this.x or obj.y+obj.r+this.see>this.y or obj.y-obj.r-this.see<this.y:
-            if this.esc==True:
-                this.gen_way()
-                this.esc=False
+            self.death()
+
+    def escape(self, obj):
+        if obj.x + obj.r + self.see > self.x and obj.x -obj.r -self.see < self.x and \
+           obj.y + obj.r + self.see > self.y and obj.y -obj.r -self.see < self.y:
+            self.way = math.atan((obj.y - self.y) / (obj.x - self.x))
+            if obj.x > self.x:
+                self.way += math.pi
+            if not self.esc:
+                self.speed = 0.7
+            self.esc=True
+        elif obj.x+obj.r+self.see>self.x or obj.x-obj.r-self.see<self.x or obj.y+obj.r+self.see>self.y or obj.y-obj.r-self.see<self.y:
+            if self.esc:
+                self.gen_way()
+                self.esc = False
+
 
 class Zombie(P):
-    def __init__(this, x, y, speed=0.25, name="ZOMBIE"):
-        P.__init__(this, x, y, name)
-        this.r = 10
-        this.speed = speed
-        this.color = "darkolivegreen"
-        this.chs = False
-        this.life = 7.5
-        this.see = 100
-    def gen_way(this):
-        this.way = uniform(0.0, 2*pi)
-        this.speed = 0.25
-    def step(this):
-        P.step(this)
-        if this.x+this.speed*cos(this.way)>=1580 or this.x-this.speed*cos(this.way)<=0 or this.y+this.speed*sin(this.way)>=860 or this.y-this.speed*sin(this.way)<=0:
-            this.way+=pi
-            P.step(this)
-            P.step(this)
-    def other(this):
-        P.other(this)
-        if this.chs==False and randint(0, 200) == 0:
-            this.gen_way()
-    def intersect(this, obj):
-        if obj.x+obj.r>this.x-this.r and obj.x-obj.r<this.x+this.r and obj.y-obj.r<this.y+this.r and obj.y+obj.r>this.y-this.r and this.alive==True:
+    def __init__(self, x, y, speed=0.25, name="ZOMBIE"):
+        P.__init__(self, x, y, name)
+        self.r = 10
+        self.speed = speed
+        self.color = "darkolivegreen"
+        self.chs = False
+        self.life = 7.5
+        self.see = 100
+
+    def gen_way(self):
+        self.way = random.uniform(0.0, 2 * math.pi)
+        self.speed = 0.25
+
+    def step(self):
+        P.step(self)
+        if self.x + self.speed * math.cos(self.way) >= 1580 or self.x - self.speed * math.cos(self.way) <= 0 or \
+           self.y + self.speed * math.sin(self.way) >= 860 or self.y - self.speed * math.sin(self.way) <= 0:
+            self.way += math.pi
+            P.step(self)
+            P.step(self)
+
+    def other(self):
+        P.other(self)
+        if not self.chs and random.randint(0, 200) == 0:
+            self.gen_way()
+
+    def intersect(self, obj):
+        if obj.x+obj.r>self.x-self.r and obj.x-obj.r<self.x+self.r and obj.y-obj.r<self.y+self.r and obj.y+obj.r>self.y-self.r and self.alive==True:
             obj.life-=0.15
             if obj.life<=0:
                 obj.death()
-    def chase(this, obj):
-        if obj.x+obj.r+this.see>this.x and obj.x-obj.r-this.see<this.x and obj.y+obj.r+this.see>this.y and obj.y-obj.r-this.see<this.y:
-            this.way = atan((this.y - obj.y) / (this.x - obj.x))
-            if this.x>obj.x:
-                this.way+=pi
-            if this.chs==False:
-                this.speed=0.6
-            this.chs=True
-        elif obj.x+obj.r+this.see>this.x or obj.x-obj.r-this.see<this.x or obj.y+obj.r+this.see>this.y or obj.y-obj.r-this.see<this.y:
-            if this.chs==True:
-                this.gen_way()
-                this.chs=False    
+
+    def chase(self, obj):
+        if obj.x+obj.r+self.see>self.x and obj.x-obj.r-self.see<self.x and obj.y+obj.r+self.see>self.y and obj.y-obj.r-self.see<self.y:
+            self.way = math.atan((self.y - obj.y) / (self.x - obj.x))
+            if self.x > obj.x:
+                self.way += math.pi
+            if not self.chs:
+                self.speed = 0.6
+            self.chs=True
+        elif obj.x+obj.r+self.see>self.x or obj.x-obj.r-self.see<self.x or obj.y+obj.r+self.see>self.y or obj.y-obj.r-self.see<self.y:
+            if self.chs:
+                self.gen_way()
+                self.chs = False
+
 
 class Person(P):
-    def __init__(this, x, y, speed=1, name="PLAYER"):
-        P.__init__(this, x, y, name)
-        this.life = 20
-        this.energy = 100
-        this.r = 10
-        this.speed = speed
-        this.porttime = 0
-        this.portx = 0
-        this.porty = 0
-        this.color = "gray"
-    def step(this):
+    def __init__(self, x, y, speed=1, name="PLAYER"):
+        P.__init__(self, x, y, name)
+        self.life = 20
+        self.energy = 100
+        self.r = 10
+        self.speed = speed
+        self.porttime = 0
+        self.portx = 0
+        self.porty = 0
+        self.color = "gray"
+
+    def step(self):
         if moveP==True:
-            P.step(this)
-    def draw(this, canv):
-        P.draw(this, canv)
-        #canv.create_arc(this.x-this.r+2, this.y-this.r+2, this.x+this.r-2, this.y+this.r-2, start=-this.way*57.3-30, extent=-this.way*57.3+30, style=ARC,)
-        canv.create_oval((this.x+cos(this.way)*5)-2, (this.y+sin(this.way)*5)-2, (this.x+cos(this.way))+2, (this.y+sin(this.way))+2, fill='red')
-    def event(this, event):
-        this.way = atan((event.y - this.y) / (event.x - this.x))
-        if event.x < this.x:
-            this.way += pi
-    def death(this):
+            P.step(self)
+
+    def draw(self, canv):
+        P.draw(self, canv)
+        #canv.create_arc(self.x-self.r+2, self.y-self.r+2, self.x+self.r-2, self.y+self.r-2, start=-self.way*57.3-30, extent=-self.way*57.3+30, style=ARC,)
+        canv.create_oval((self.x + math.cos(self.way)*5) - 2,
+                         (self.y + math.sin(self.way)*5) - 2,
+                         (self.x + math.cos(self.way))+2,
+                         (self.y + math.sin(self.way))+2, fill='red')
+
+    def event(self, event):
+        self.way = math.atan((event.y - self.y) / (event.x - self.x))
+        if event.x < self.x:
+            self.way += math.pi
+
+    def death(self):
         global gameloop
         #s.clear()
         #gameloop=False
         root.destroy()
-    def other(this):
+
+    def other(self):
         global moveP
-        P.other(this)
-        if this.porttime>0:
-            canv.create_oval(this.x-this.r-this.porttime*0.5, this.y-this.r-this.porttime*0.5, this.x+this.r+this.porttime*0.5, this.y+this.r+this.porttime*0.5, outline='white')
-            this.porttime-=0.5
-            if this.porttime<=0:
-                this.x=this.portx
-                this.y=this.porty
-                this.speed=1
+        P.other(self)
+        if self.porttime>0:
+            canv.create_oval(self.x-self.r-self.porttime*0.5, self.y-self.r-self.porttime*0.5, self.x+self.r+self.porttime*0.5, self.y+self.r+self.porttime*0.5, outline='white')
+            self.porttime-=0.5
+            if self.porttime<=0:
+                self.x=self.portx
+                self.y=self.porty
+                self.speed=1
                 moveP=False
 
+
 class Bullet(P):
-    def __init__(this):
-        P.__init__(this, 0, 0, '')
-        this.speed = 6
-        this.r = 3
-        this.life = 8
-        this.color = 'gold'
-        this.alive = False
-    def step(this):
-        if this.alive == True:
-            P.step(this)
-            this.life-=0.2
-            if this.life<=0:
-                this.death()
-    def death(this):
-        this.alive = False
-    def shot(this, obj, x, y):
-        this.x = obj.x
-        this.y = obj.y
-        this.way = atan((y - this.y) / (x - this.x))
+    def __init__(self):
+        P.__init__(self, 0, 0, '')
+        self.speed = 6
+        self.r = 3
+        self.life = 8
+        self.color = 'gold'
+        self.alive = False
+
+    def step(self):
+        if self.alive == True:
+            P.step(self)
+            self.life-=0.2
+            if self.life<=0:
+                self.death()
+
+    def death(self):
+        self.alive = False
+
+    def shot(self, obj, x, y):
+        self.x = obj.x
+        self.y = obj.y
+        self.way = math.atan((y - self.y) / (x - self.x))
         if x<obj.x:
-            this.way+=pi
-        this.life = 5
-        this.alive = True
-    def intersect(this, obj):
-        if obj.x+obj.r>this.x-this.r and obj.x-obj.r<this.x+this.r and obj.y-obj.r<this.y+this.r and obj.y+obj.r>this.y-this.r and this.alive==True:
-            this.life=0
-            obj.life-=2.6
-            this.death()
-    def other(this):
-        P.other(this)
+            self.way += math.pi
+        self.life = 5
+        self.alive = True
+
+    def intersect(self, obj):
+        if obj.x+obj.r>self.x-self.r and obj.x-obj.r<self.x+self.r and obj.y-obj.r<self.y+self.r and obj.y+obj.r>self.y-self.r and self.alive==True:
+            self.life = 0
+            obj.life -= 2.6
+            self.death()
+
+    def other(self):
+        P.other(self)
 
 
-def gamerhp(this):
-    canv.create_rectangle(10, 10, 10 + this.life*5, 30, fill='red', outline='')
+def gamerhp(self):
+    canv.create_rectangle(10, 10, 10 + self.life*5, 30, fill='red', outline='')
     canv.create_rectangle(10, 10, 110, 30)
-    canv.create_text(95, 20, text = str(ceil(this.life*5))+'/100', font='Verdana 12', anchor='e')
-    canv.create_rectangle(10, 40, 10 + this.energy, 60, fill='blue', outline='')
+    canv.create_text(95, 20, text=str(math.ceil(self.life*5))+'/100', font='Verdana 12', anchor='e')
+    canv.create_rectangle(10, 40, 10 + self.energy, 60, fill='blue', outline='')
     canv.create_rectangle(10, 40, 110, 60)
-    canv.create_text(95, 50, text = str(this.energy)+'/100', font='Verdana 12', anchor='e')
+    canv.create_text(95, 50, text=str(self.energy)+'/100', font='Verdana 12', anchor='e')
 
 
 def tick():
@@ -234,9 +274,11 @@ def tick():
         obj.other()
     gamerhp(s[15])
 
+
 def mouseMove(event):
     for obj in s:
         obj.event(event)
+
 
 def click(event):
     if s[15].energy>5:
@@ -253,6 +295,7 @@ def click(event):
             b[4].shot(s[15], event.x, event.y)
             s[15].energy-=5
 
+
 def click2(event):
     if s[15].energy>20:
         s[15].speed = 0
@@ -261,19 +304,22 @@ def click2(event):
         s[15].porttime = 40
         s[15].energy-=20 
 
+
 def click3(event):
     global moveP
     moveP=True
 
+
 def release3(event):
     global moveP
     moveP=False
-    
+
 
 def Key(event):
     global gameloop
     if event.keysym=='Escape':
         gameloop=False
+
 
 def gameinit():
     global gameloop
@@ -322,22 +368,22 @@ root.bind('<ButtonRelease-3>', release3)
 s = []
 b = []
 for i in range(15):
-    s.append(Cow(randint(0,1580), randint(0,860)))
+    s.append(Cow(random.randint(0,1580), random.randint(0,860)))
 s.append(Person(250, 250))
 for i in range(5):
-    s.append(Zombie(randint(0,1580), randint(0,860)))
+    s.append(Zombie(random.randint(0,1580), random.randint(0,860)))
 for i in range(4):
     b.append(Bullet())
 gameloop = False
 moveP = False
 ticktime = 0.01
 gameinit()
-next = time() + ticktime
+next = time.time() + ticktime
 while gameloop:
-    while time() < next:
+    while time.time() < next:
         pass
-    next = time() + ticktime
+    next = time.time() + ticktime
     tick()
     canv.update()
 
-canv.create_text(0,0,text='GAME OVER', font='Verdana 72')
+canv.create_text(0, 0, text='GAME OVER', font='Verdana 72')
