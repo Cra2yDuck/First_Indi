@@ -259,20 +259,20 @@ def tick():
         obj.draw(canv)
         obj.other()
     for obj in s[0:15]:
-        obj.intersect(s[15])
-        obj.escape(s[15])
+        obj.intersect(global_person)
+        obj.escape(global_person)
         for i in b:
             i.intersect(obj)
     for obj in s[16:21]:
-        obj.intersect(s[15])
+        obj.intersect(global_person)
         for i in b:
             i.intersect(obj)
-        obj.chase(s[15])
+        obj.chase(global_person)
     for obj in b:
         obj.step()
         obj.draw(canv)
         obj.other()
-    gamerhp(s[15])
+    gamerhp(global_person)
 
 
 def mouseMove(event):
@@ -281,28 +281,28 @@ def mouseMove(event):
 
 
 def click(event):
-    if s[15].energy>5:
+    if global_person.energy>5:
         if b[0].alive==False:
-            b[0].shot(s[15], event.x, event.y)
-            s[15].energy-=5
+            b[0].shot(global_person, event.x, event.y)
+            global_person.energy-=5
         elif b[1].alive==False:
-            b[1].shot(s[15], event.x, event.y)
-            s[15].energy-=5
+            b[1].shot(global_person, event.x, event.y)
+            global_person.energy-=5
         elif b[2].alive==False:
-            b[2].shot(s[15], event.x, event.y)
-            s[15].energy-=5
+            b[2].shot(global_person, event.x, event.y)
+            global_person.energy-=5
         elif b[3].alive==False:
-            b[4].shot(s[15], event.x, event.y)
-            s[15].energy-=5
+            b[4].shot(global_person, event.x, event.y)
+            global_person.energy-=5
 
 
 def click2(event):
-    if s[15].energy>20:
-        s[15].speed = 0
-        s[15].portx = event.x
-        s[15].porty = event.y
-        s[15].porttime = 40
-        s[15].energy-=20 
+    if global_person.energy>20:
+        global_person.speed = 0
+        global_person.portx = event.x
+        global_person.porty = event.y
+        global_person.porttime = 40
+        global_person.energy-=20 
 
 
 def click3(event):
@@ -332,7 +332,7 @@ canv.pack()
 #m = Menu(root)
 #root.config(menu=m)
 #fm = Menu(m)
-#m.add_cascade(label="Р Р°Р·СЂРµС€РµРЅРёРµ",menu=fm)
+#m.add_cascade(label="Р Р°Р·СЂРµС€РµРЅРёРµ",menu=fm)
 #fm.add_command(label="320 x 200",command=display1)
 #fm.add_command(label="320 x 240",command=display2)
 #fm.add_command(label="640 x 480",command=display3)
@@ -370,6 +370,8 @@ b = []
 for i in range(15):
     s.append(Cow(random.randint(0,1580), random.randint(0,860)))
 s.append(Person(250, 250))
+global_person = s[-1]
+global_person.x = 0
 for i in range(5):
     s.append(Zombie(random.randint(0,1580), random.randint(0,860)))
 for i in range(4):
