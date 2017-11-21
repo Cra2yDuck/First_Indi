@@ -62,12 +62,19 @@ class Cow(P):
         self.speed = random.uniform(0.25, 0.75)
 
     def step(self):
-        P.step(self)
         if self.x + self.speed * math.cos(self.way) >= 1580 or self.x - self.speed * math.cos(self.way) <= 0 or \
            self.y + self.speed * math.sin(self.way) >= 860 or self.y - self.speed * math.sin(self.way) <= 0:
             self.way += math.pi
             P.step(self)
             P.step(self)
+        for i in blocks:
+            if self.x + self.r + self.speed * math.cos(self.way) >= i.x and self.x - self.r - \
+               self.speed * math.cos(self.way) <= i.x + i.dx and self.y + self.r + self.speed * math.sin(self.way)\
+               >= i.y and self.y - self.r - self.speed * math.sin(self.way) <= i.y + i.dy:
+                self.way += math.pi
+                P.step(self)
+                P.step(self)
+        P.step(self)
 
     def other(self):
         P.other(self)
@@ -83,15 +90,16 @@ class Cow(P):
     def intersect(self, obj):
         if obj.x+obj.r>self.x-self.r and obj.x-obj.r<self.x+self.r and obj.y-obj.r<self.y+self.r and obj.y+obj.r>self.y-self.r and self.alive==True:
             self.life-=0.15
-        if self.life<=0:
-            if obj.life<20-5 and self.alive==True:
+        if self.life<=0 and obj==global_person:
+            if obj.life<gamerMaxHP-5 and self.alive==True:
                 obj.life+=3
-            elif obj.life<20 and self.alive==True:
-                obj.life=20
-            if obj.energy<100-30 and self.alive==True:
+            elif obj.life<gamerMaxHP and self.alive==True:
+                obj.life=gamerMaxHP
+            if obj.energy<gamerMaxEP-30 and self.alive==True:
                 obj.energy+=30
-            elif obj.energy<20 and self.alive==True:
-                obj.energy=100
+            elif obj.energy<gamerMaxEP and self.alive==True:
+                obj.energy=gamerMaxEP
+        if self.life<=0:
             self.death()
 
     def escape(self, obj):
@@ -124,12 +132,19 @@ class Zombie(P):
         self.speed = 0.25
 
     def step(self):
-        P.step(self)
         if self.x + self.speed * math.cos(self.way) >= 1580 or self.x - self.speed * math.cos(self.way) <= 0 or \
            self.y + self.speed * math.sin(self.way) >= 860 or self.y - self.speed * math.sin(self.way) <= 0:
             self.way += math.pi
             P.step(self)
             P.step(self)
+        for i in blocks:
+            if self.x + self.r + self.speed * math.cos(self.way) >= i.x and self.x - self.r - \
+               self.speed * math.cos(self.way) <= i.x + i.dx and self.y + self.r + self.speed * math.sin(self.way)\
+               >= i.y and self.y - self.r - self.speed * math.sin(self.way) <= i.y + i.dy:
+                self.way += math.pi
+                P.step(self)
+                P.step(self)
+        P.step(self)
 
     def other(self):
         P.other(self)
@@ -241,9 +256,19 @@ class Bullet(P):
     def other(self):
         P.other(self)
 
+class Block:
+    def __init__(self, x, y, dx, dy, color='black'):
+        self.x = x
+        self.y = y
+        self.dx = dx
+        self.dy = dy
+        self.color = color
+    
+    def draw(self, canv):
+        canv.create_rectangle(self.x, self.y, self.x + self.dx, self.y + self.dy, fill=self.color)
 
 def gamerhp(self):
-    canv.create_rectangle(10, 10, 10 + self.life*5, 30, fill='red', outline='')
+    canv.create_rectangle(10, 10, 10 + self.life*100//gamerMaxHP, 30, fill='red', outline='')
     canv.create_rectangle(10, 10, 110, 30)
     canv.create_text(95, 20, text=str(math.ceil(self.life*5))+'/100', font='Verdana 12', anchor='e')
     canv.create_rectangle(10, 40, 10 + self.energy, 60, fill='blue', outline='')
@@ -273,6 +298,8 @@ def tick():
         obj.step()
         obj.draw(canv)
         obj.other()
+    for obj in blocks:
+        obj.draw(canv)
     gamerhp(global_person)
 
 
@@ -319,6 +346,17 @@ def gameinit():
     global gameloop
     gameloop=True
 
+def gameover():
+    global s
+    for i in s:
+        i.death()
+    for i in b:
+        i.death()
+    canv.create_text(0, 0, text='GAME OVER', font='Verdana 72', anchor='nw')
+    canv.update()
+    time.sleep(1)
+    root.destroy()
+
 
 root=Tk()
 canv=Canvas(root,width=1580,height=860,bg='darkgreen')
@@ -358,13 +396,18 @@ root.bind('<Button-1>', click)
 root.bind('<Button-2>', click2)
 root.bind('<Button-3>', click3)
 root.bind('<ButtonRelease-3>', release3)
+root.bind('<KeyPress>', Key)
 
 countCow=15
-countZombie=5
+countZombie=8
 countBullet=4
+countBlocks=5
+gamerMaxHP=20
+gamerMaxEP=100
 
 s = []
 b = []
+blocks = []
 for i in range(countCow):
     s.append(Cow(random.randint(0,1580), random.randint(0,860)))
 s.append(Person(250, 250))
@@ -373,6 +416,9 @@ for i in range(countZombie):
     s.append(Zombie(random.randint(0,1580), random.randint(0,860)))
 for i in range(countBullet):
     b.append(Bullet())
+for i in range(countBlocks):
+    blocks.append(Block(random.randint(0, 1530), random.randint(0, 810), random.randint(10, 50), \
+                        random.randint(10, 50), 'blue'))
 gameloop = False
 moveP = False
 ticktime = 0.01
@@ -385,4 +431,5 @@ while gameloop:
     tick()
     canv.update()
 
-canv.create_text(0, 0, text='GAME OVER', font='Verdana 72')
+time.sleep(1)
+gameover()
