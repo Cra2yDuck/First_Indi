@@ -329,6 +329,7 @@ def click2(event):
 def click3(event):
     global moveP
     moveP=True
+    global_person.event(event)
 
 
 def release3(event):
