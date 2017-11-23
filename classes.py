@@ -16,6 +16,8 @@ class P:
         self.energy = 100
         self.alive = True
         self.color = "Blue"
+        self.eyecolor = 'black'
+        self.eyeline = 'black'
 
     def gen_way(self):
         self.way = 0
@@ -36,6 +38,15 @@ class P:
     def draw(self, canv):
         if self.alive:
             canv.create_oval(self.x - self.r, self.y - self.r, self.x + self.r, self.y + self.r, fill=self.color)
+            #canv.create_arc(self.x-self.r+2, self.y-self.r+2, self.x+self.r-2, self.y+self.r-2, start=-self.way*57.3-30, extent=-self.way*57.3+30, style=ARC,)
+            canv.create_oval((self.x + math.cos(self.way+0.75)*5) - 2,
+                             (self.y + math.sin(self.way+0.75)*5) - 2,
+                             (self.x + math.cos(self.way+0.75)*5) + 2,
+                             (self.y + math.sin(self.way+0.75)*5) + 2, fill=self.eyecolor, outline=self.eyeline)
+            canv.create_oval((self.x + math.cos(self.way-0.75)*5) - 2,
+                             (self.y + math.sin(self.way-0.75)*5) - 2,
+                             (self.x + math.cos(self.way-0.75)*5) + 2,
+                             (self.y + math.sin(self.way-0.75)*5) + 2, fill=self.eyecolor, outline=self.eyeline)             
 
     def other(self):
         if self.life <= 0:
@@ -49,22 +60,14 @@ class Cow(P):
     def __init__(self, x, y, name=""):
         P.__init__(self, x, y, name)
         self.color = "chocolate"
+        self.eyecolor = 'cornflowerblue'
         self.r = 5
         self.esc = False
 
     def draw(self, canv):
         P.draw(self, canv)
         if self.alive:
-            canv.create_rectangle(self.x-self.life*2,self.y-self.r-10,self.x+self.life*2,self.y-self.r-5,fill="red")
-        #canv.create_arc(self.x-self.r+2, self.y-self.r+2, self.x+self.r-2, self.y+self.r-2, start=-self.way*57.3-30, extent=-self.way*57.3+30, style=ARC,)
-        canv.create_oval((self.x + math.cos(self.way+0.75)*5) - 2,
-                         (self.y + math.sin(self.way+0.75)*5) - 2,
-                         (self.x + math.cos(self.way+0.75)*5) + 2,
-                         (self.y + math.sin(self.way+0.75)*5) + 2, fill='cornflowerblue')
-        canv.create_oval((self.x + math.cos(self.way-0.75)*5) - 2,
-                         (self.y + math.sin(self.way-0.75)*5) - 2,
-                         (self.x + math.cos(self.way-0.75)*5) + 2,
-                         (self.y + math.sin(self.way-0.75)*5) + 2, fill='cornflowerblue')        
+            canv.create_rectangle(self.x-self.life*2,self.y-self.r-10,self.x+self.life*2,self.y-self.r-5,fill="red")      
 
     def gen_way(self):
         self.way = random.uniform(0.0, 2 * math.pi)
@@ -132,6 +135,7 @@ class Zombie(P):
         self.r = 10
         self.speed = speed
         self.color = "darkolivegreen"
+        self.eyecolor = 'midnightblue'
         self.chs = False
         self.life = 7.5
         self.see = 100
@@ -154,17 +158,6 @@ class Zombie(P):
                 P.step(self)
                 P.step(self)
         P.step(self)
-    def draw(self, canv):
-        P.draw(self, canv)
-        #canv.create_arc(self.x-self.r+2, self.y-self.r+2, self.x+self.r-2, self.y+self.r-2, start=-self.way*57.3-30, extent=-self.way*57.3+30, style=ARC,)
-        canv.create_oval((self.x + math.cos(self.way+0.75)*5) - 2,
-                         (self.y + math.sin(self.way+0.75)*5) - 2,
-                         (self.x + math.cos(self.way+0.75)*5) + 2,
-                         (self.y + math.sin(self.way+0.75)*5) + 2, fill='midnightblue')
-        canv.create_oval((self.x + math.cos(self.way-0.75)*5) - 2,
-                         (self.y + math.sin(self.way-0.75)*5) - 2,
-                         (self.x + math.cos(self.way-0.75)*5) + 2,
-                         (self.y + math.sin(self.way-0.75)*5) + 2, fill='midnightblue')
         
 
     def other(self):
@@ -203,6 +196,7 @@ class Person(P):
         self.portx = 0
         self.porty = 0
         self.color = "gray"
+        self.eyecolor = 'red'
 
     def step(self):
         if moveP==True:
@@ -210,15 +204,6 @@ class Person(P):
 
     def draw(self, canv):
         P.draw(self, canv)
-        #canv.create_arc(self.x-self.r+2, self.y-self.r+2, self.x+self.r-2, self.y+self.r-2, start=-self.way*57.3-30, extent=-self.way*57.3+30, style=ARC,)
-        canv.create_oval((self.x + math.cos(self.way+0.75)*5) - 2,
-                         (self.y + math.sin(self.way+0.75)*5) - 2,
-                         (self.x + math.cos(self.way+0.75)*5) + 2,
-                         (self.y + math.sin(self.way+0.75)*5) + 2, fill='red')
-        canv.create_oval((self.x + math.cos(self.way-0.75)*5) - 2,
-                         (self.y + math.sin(self.way-0.75)*5) - 2,
-                         (self.x + math.cos(self.way-0.75)*5) + 2,
-                         (self.y + math.sin(self.way-0.75)*5) + 2, fill='red')
 
     def event(self, event):
         self.way = math.atan((event.y - self.y) / (event.x - self.x))
@@ -251,6 +236,8 @@ class Bullet(P):
         self.r = 3
         self.life = 8
         self.color = 'gold'
+        self.eyecolor = ''
+        self.eyeline = ''
         self.alive = False
 
     def step(self):
@@ -273,7 +260,7 @@ class Bullet(P):
         self.alive = True
 
     def intersect(self, obj):
-        if obj.x+obj.r>self.x-self.r and obj.x-obj.r<self.x+self.r and obj.y-obj.r<self.y+self.r and obj.y+obj.r>self.y-self.r and self.alive==True:
+        if obj.alive and self.alive and obj.x+obj.r>self.x-self.r and obj.x-obj.r<self.x+self.r and obj.y-obj.r<self.y+self.r and obj.y+obj.r>self.y-self.r:
             self.life = 0
             obj.life -= 2.6
             self.death()
@@ -339,11 +326,12 @@ def click(event):
             if i.alive==False:
                 i.shot(global_person, event.x, event.y)
                 global_person.energy-=5
+                global_person.event(event)
                 break
 
 
 def click2(event):
-    if global_person.energy>20:
+    if global_person.energy>=20:
         global_person.speed = 0
         global_person.portx = event.x
         global_person.porty = event.y
