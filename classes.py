@@ -56,6 +56,15 @@ class Cow(P):
         P.draw(self, canv)
         if self.alive:
             canv.create_rectangle(self.x-self.life*2,self.y-self.r-10,self.x+self.life*2,self.y-self.r-5,fill="red")
+        #canv.create_arc(self.x-self.r+2, self.y-self.r+2, self.x+self.r-2, self.y+self.r-2, start=-self.way*57.3-30, extent=-self.way*57.3+30, style=ARC,)
+        canv.create_oval((self.x + math.cos(self.way+0.75)*5) - 2,
+                         (self.y + math.sin(self.way+0.75)*5) - 2,
+                         (self.x + math.cos(self.way+0.75)*5) + 2,
+                         (self.y + math.sin(self.way+0.75)*5) + 2, fill='cornflowerblue')
+        canv.create_oval((self.x + math.cos(self.way-0.75)*5) - 2,
+                         (self.y + math.sin(self.way-0.75)*5) - 2,
+                         (self.x + math.cos(self.way-0.75)*5) + 2,
+                         (self.y + math.sin(self.way-0.75)*5) + 2, fill='cornflowerblue')        
 
     def gen_way(self):
         self.way = random.uniform(0.0, 2 * math.pi)
@@ -145,6 +154,18 @@ class Zombie(P):
                 P.step(self)
                 P.step(self)
         P.step(self)
+    def draw(self, canv):
+        P.draw(self, canv)
+        #canv.create_arc(self.x-self.r+2, self.y-self.r+2, self.x+self.r-2, self.y+self.r-2, start=-self.way*57.3-30, extent=-self.way*57.3+30, style=ARC,)
+        canv.create_oval((self.x + math.cos(self.way+0.75)*5) - 2,
+                         (self.y + math.sin(self.way+0.75)*5) - 2,
+                         (self.x + math.cos(self.way+0.75)*5) + 2,
+                         (self.y + math.sin(self.way+0.75)*5) + 2, fill='midnightblue')
+        canv.create_oval((self.x + math.cos(self.way-0.75)*5) - 2,
+                         (self.y + math.sin(self.way-0.75)*5) - 2,
+                         (self.x + math.cos(self.way-0.75)*5) + 2,
+                         (self.y + math.sin(self.way-0.75)*5) + 2, fill='midnightblue')
+        
 
     def other(self):
         P.other(self)
@@ -197,7 +218,7 @@ class Person(P):
         canv.create_oval((self.x + math.cos(self.way-0.75)*5) - 2,
                          (self.y + math.sin(self.way-0.75)*5) - 2,
                          (self.x + math.cos(self.way-0.75)*5) + 2,
-                         (self.y + math.sin(self.way-0.75)*5) + 2, fill='red')        
+                         (self.y + math.sin(self.way-0.75)*5) + 2, fill='red')
 
     def event(self, event):
         self.way = math.atan((event.y - self.y) / (event.x - self.x))
