@@ -100,9 +100,9 @@ class Cow(P):
             self.r -= 0.02
 
     def intersect(self, obj):
-        if obj.x+obj.r>self.x-self.r and obj.x-obj.r<self.x+self.r and obj.y-obj.r<self.y+self.r and obj.y+obj.r>self.y-self.r and self.alive==True:
+        if obj.x+obj.r>self.x-self.r and obj.x-obj.r<self.x+self.r and obj.y-obj.r<self.y+self.r and obj.y+obj.r>self.y-self.r and Person==type(obj) and self.alive==True:
             self.life-=0.15
-        if self.life<=0 and obj==global_person:
+        if self.life<=0 and Person==type(obj):
             if obj.life<gamerMaxHP-5 and self.alive==True:
                 obj.life+=3
             elif obj.life<gamerMaxHP and self.alive==True:
@@ -116,7 +116,7 @@ class Cow(P):
 
     def escape(self, obj):
         if obj.x + obj.r + self.see > self.x and obj.x -obj.r -self.see < self.x and \
-           obj.y + obj.r + self.see > self.y and obj.y -obj.r -self.see < self.y:
+           obj.y + obj.r + self.see > self.y and obj.y -obj.r -self.see < self.y and Person==type(obj):
             self.way = math.atan((obj.y - self.y) / (obj.x - self.x))
             if obj.x > self.x:
                 self.way += math.pi
@@ -166,7 +166,7 @@ class Zombie(P):
             self.gen_way()
 
     def intersect(self, obj):
-        if obj.x+obj.r>self.x-self.r and obj.x-obj.r<self.x+self.r and obj.y-obj.r<self.y+self.r and obj.y+obj.r>self.y-self.r and self.alive==True:
+        if obj.x+obj.r>self.x-self.r and obj.x-obj.r<self.x+self.r and obj.y-obj.r<self.y+self.r and obj.y+obj.r>self.y-self.r and Person==type(obj) and self.alive==True:
             obj.life-=0.15
             if obj.life<=0:
                 obj.death()
